@@ -1,0 +1,17 @@
+{
+    "contents" : "library(glinternet)\nlibrary(hierNet)\nlibrary(grplasso) # package by Meier\n\nlibrary(dplyr)\n\n\nn = 100\np = 3\n\n# generate random categorical vars with 100 obs\n# x1 = sample(c(1, 2, 3, 4, 5), n, replace = T)\n# x2 = sample(c(1, 2, 3), n, replace = T)\n# x3 = sample(c(1, 2), n, replace = T)\n# X = data.frame(cbind(intercept = rep(1, n), x1, x2, x3))\n# X$x1 = as.factor(X$x1)\n# X$x2 = as.factor(X$x2)\n# X$x3 = as.factor(X$x3)\n\n# simulation from glinternet package\n# continuous response, categorical variables\nset.seed(20150305)\nX = matrix(sample(0:2, 100*p, replace=TRUE), nrow=100) # design matrix\nnumLevels = rep(3, p)\n\nx1 = as.factor(X[, 1])\nx2 = as.factor(X[, 2])\nx3 = as.factor(X[, 3])\n\n# dummies\nintercept = rep(1, n)\nx1_d = data.frame(dummy(x1)); names(x1_d) = paste(\"x1\", 0:(p-1), sep = \"\")\nx2_d = data.frame(dummy(x1)); names(x2_d) = paste(\"x2\", 0:(p-1), sep = \"\")\nx3_d = data.frame(dummy(x1)); names(x3_d) = paste(\"x3\", 0:(p-1), sep = \"\")\nx12_d = interaction_dummy(x1_d, x2_d)\nx13_d = interaction_dummy(x1_d, x3_d)\nx23_d = interaction_dummy(x2_d, x3_d)\nX_d = cbind(intercept, x1_d, x2_d, x3_d, x12_d, x13_d, x23_d)\n\n\n# fit = glinternet(X, Y, numLevels)\n\n# hierarchical truth \\Theta_jk != 0 => \\beta_j != 0 and \\beta_k != 0\n# draw both the coefficients and error from N(0, 1).\n# coefficient convention: b0, b1, b2, b3, b12, b13, b23\n\n## strong hierrchy model-I x1 x2 x3 x1x2. Simulation of coefficients\nbeta0 = rnorm(1)\nbeta1 = rnorm(length(levels(x1))-1); beta1 = c(-sum(beta1), beta1)\nbeta2 = rnorm(length(levels(x2))-1); beta2 = c(-sum(beta2), beta2)\nbeta3 = rnorm(length(levels(x3))-1); beta3 = c(-sum(beta3), beta3)\nbeta12 = rnorm(length(levels(x1)) * length(levels(x2)) - 1); beta12 = c(-sum(beta12), beta12)\nbeta13 = rep(0, length(levels(x1)) * length(levels(x3)))\nbeta23 = rep(0, length(levels(x2)) * length(levels(x3)))\n\nBeta = t(t(c(beta0, beta1, beta2, beta3, beta12, beta13, beta23)))\n\n# simulation of response with some stn ratio\n# Note: given X, the signal variability of a categirical variable is due to one of its levels\nvar_signal = 4 # intercept is constant\ny_true = as.matrix(X_d) %*% Beta\ny_sim = y_true + rnorm(100, 0, 0.5)\n\n\n## fit model with lm\nfit.lm = lm(y ~ x1 + x2 + x3 + x1 * x2 + x1 * x3 + x2 * x3)\nsummary(fit.lm)\n\n## Todo: group lasso (lin and yuan 2006) and hierarchical group lasso (lim and hastie 2013)\n\n\n\n",
+    "created" : 1425419717190.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "898437531",
+    "id" : "1C5BF6FB",
+    "lastKnownWriteTime" : 1425616094,
+    "path" : "C:/Users/kwang18/Dropbox/2015 Spring/Research/First_paper/R/regression_simulation.R",
+    "project_path" : "regression_simulation.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
