@@ -84,7 +84,7 @@ group.0 = c(1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6)
 # select best lambda using CV
 fit.cv.gglasso.0 = cv.gglasso(as.matrix(X[, -1]), y.sim, group = group.0)
 plot(gglasso(as.matrix(X[, -1]), y.sim, group = group.0))
-abline(abline(v = log(fit.cv.gglasso.0$lambda.min)))
+abline(abline(v = log(fit.cv.gglasso.0$lambda.1se)))
 # 
 fit.gglasso.0 = gglasso(as.matrix(X[, -1]), y.sim, group = group.0, lambda = fit.cv.gglasso.0$lambda.min)
 coef(fit.gglasso.0)
