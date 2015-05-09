@@ -122,6 +122,6 @@ dot_theme = theme_bw() +
                                         linetype="dashed"))
 
 ggplot(coef_reshape, aes(y=var, x=coef)) + 
-  geom_point(aes(shape = model, col = model), size = 5) + 
+  geom_point(aes(shape = model, col = model), size = 3) + 
   dot_theme +
   scale_y_discrete("")
